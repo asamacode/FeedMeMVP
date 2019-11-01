@@ -1,6 +1,19 @@
 package com.asama.luong.feedmemvp.base
 
+import com.asama.luong.feedmemvp.injection.component.DaggerPresenterInjector
+import com.asama.luong.feedmemvp.injection.component.PresenterInjector
+import com.asama.luong.feedmemvp.injection.module.ContextModule
+import com.asama.luong.feedmemvp.injection.module.NetworkModule
+import com.asama.luong.feedmemvp.ui.post.PostPresenter
+
 abstract class BasePresenter<out V: BaseView>(protected val view: V) {
+
+    private val injector : PresenterInjector = DaggerPresenterInjector
+        .builder()
+        .baseView(view)
+        .contextModule(ContextModule)
+        .networkModule(NetworkModule)
+        .build()
 
     init {
         inject()
@@ -21,6 +34,8 @@ abstract class BasePresenter<out V: BaseView>(protected val view: V) {
      */
 
     private fun inject() {
-
+        when (this) {
+            is PostPresenter -> injector.inject(this)
+        }
     }
 }
